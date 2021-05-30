@@ -55,18 +55,150 @@
     <button>Trigger a Global Error</button>
   </section>
 
+
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "470588ca9d3541d1bfe1ac3c77c69aa6"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+
+    TrackJS.track('Testing TrackJS!');
+                        
+  </script>
+
+  <script>
+        class ZeroErr extends Error {
+      constructor(message = 'Are you sure you want to divide by 0?') {
+        super(message);
+        this.name="ZeroErr";
+      }
+    }
     let calculateBtn = document.querySelector('#calculate');
     calculateBtn.addEventListener('click', () => {
-      let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        let output = document.querySelector('output');
+        let firstNum = document.querySelector('#first-num').value;
+        let secondNum = document.querySelector('#second-num').value;
+        let operator = document.querySelector('#operator').value;
+ 
+        if (operator === '/' || secondNum === '0'){
+          throw new ZeroErr();
+        }
+        else{
+          output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+        }
+      } 
+      
+      catch (err) {
+        console.error(`ERROR: (${err})`);
+      } 
+      
+      finally {
+        console.log("done!");
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
-    // TODO - Make buttons functional
+    console.log(errorBtns.length);
+    let log = errorBtns[0];
+    log.addEventListener('click', () => {
+      console.log('log');
+    });
+
+    let error = errorBtns[1];
+    error.addEventListener('click', () => {
+      console.error('error');
+    });
+
+    let dir = errorBtns[2];
+    dir.addEventListener('click', () => {
+      console.dir(dir);
+    });
+
+    let dirxml = errorBtns[3];
+    dirxml.addEventListener('click', () => {
+      console.dirxml(document.querySelector('section'));
+    });
+
+    let groupstart = errorBtns[4];
+    groupstart.addEventListener('click', () => {
+      for (let i = 0; i < 5; i++){
+        console.group(i);
+        console.log(`group ${i}`)
+      }
+    });
+
+    let groupend = errorBtns[5];
+    groupend.addEventListener('click', () => {
+      for (let i = 0; i < 5; i++){
+        console.groupEnd(i);
+        console.log(`group ${i}`)
+      }
+    });
+
+    let table = errorBtns[6];
+    table.addEventListener('click', () => {
+      let tbl = [
+        {lastname: "IM", firstname: "NAYEON"},
+        {lastname: "YOO", firstname: "JEONGYEON"},
+        {lastname: "HIRAI", firstname: "MOMO"},
+        {lastname: "MINATOZAKI", firstname: "SANA"},
+        {lastname: "PARK", firstname: "JIHYO"},
+        {lastname: "MIYOI", firstname: "MINA"},
+        {lastname: "KIM", firstname: "DAHYUN"},
+        {lastname: "SON", firstname: "CHAEYOUNG"},
+        {lastname: "CHOU", firstname: "TZUYU"}
+      ];
+      console.table(tbl);
+    });
+    let start = errorBtns[7];
+    start.addEventListener('click', () => {
+      console.log('timer started')
+      console.time('total');
+    });
+
+    let end = errorBtns[8];
+    end.addEventListener('click', () => {
+      console.timeEnd('total');
+      console.log('timer ended');
+    });
+
+    function call0() {
+      console.trace();
+      // console.log('call 0');
+      call1();
+    };
+
+    function call1() {
+      console.log('call 1');
+      call2();
+    };
+
+    function call2() {
+      console.log('call 2');
+    };
+    
+    let trace = errorBtns[9];
+    trace.addEventListener('click', () => {
+      function call0() {
+        function call1() {
+          console.trace();
+        }
+      call1();
+      }
+      call0();
+    });
+      
+    let global = errorBtns[10];
+    global.addEventListener('click', () => {
+      console.log(idontexist);
+    });
+
+    window.onerror = (err) => {
+      console.log(`Something went wrong: ${err} ;-;`);
+    };
   </script>
+  
 </body>
 </html>
